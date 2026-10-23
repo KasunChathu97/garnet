@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garnet Stack | Next-Gen Software & Web Solutions - Coming Soon</title>
+    <meta name="description" content="Garnet Stack is engineering high-performance software, custom cloud systems, and scalable web solutions. Stay tuned for our upcoming launch.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #030816;
+            --bg-card: rgba(8, 20, 48, 0.65);
+            --bg-card-hover: rgba(14, 32, 75, 0.85);
+            --primary: #00d2ff;
+            --primary-glow: rgba(0, 210, 255, 0.45);
+            --primary-deep: #0066ff;
+            --accent-cyan: #38bdf8;
+            --accent-indigo: #6366f1;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-subtle: #64748b;
+            --border-glow: rgba(56, 189, 248, 0.22);
+            --border-highlight: rgba(0, 210, 255, 0.45);
+            --glass-blur: blur(16px);
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Ambient Glow & Background Layer */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 14s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #0051ff, #001f54 70%);
+            top: -120px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, #00c6ff, #004499 75%);
+            bottom: -80px;
+            right: -80px;
+            animation-duration: 18s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, #4338ca, #001233 80%);
+            top: 40%;
+            left: 55%;
+            animation-duration: 22s;
+            animation-delay: -9s;
+            opacity: 0.35;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(45px, 35px) scale(1.08); }
+            100% { transform: translate(-30px, 60px) scale(0.95); }
+        }
+
+        /* Subtle Cyber Grid */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.035) 1px, transparent 1px);
+            background-size: 48px 48px;
+            z-index: 1;
+            pointer-events: none;
+            mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
+            -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
+        }
+
+        /* Container & Layout */
+        .wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            animation: fadeInDown 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .brand-logo:hover {
+            transform: translateY(-1px);
+        }
+
+        .brand-name {
+            font-family: var(--font-display);
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .brand-name span.highlight {
+            background: linear-gradient(135deg, #00d2ff 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 7px 18px 7px 14px;
+            border-radius: 100px;
+            background: rgba(14, 165, 233, 0.09);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #7dd3fc;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            position: relative;
+            flex-shrink: 0;
+            margin-left: 2px;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 1.5px solid var(--primary);
+            animation: pulseWave 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+
+        @keyframes pulseWave {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* Hero Content */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 0;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 3D Holographic Interactive Tech Stack */
+        .holo-stack-wrapper {
+            position: relative;
+            width: 220px;
+            height: 130px;
+            margin: 0 auto 1.4rem auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .holo-scene {
+            width: 140px;
+            height: 130px;
+            position: relative;
+            perspective: 1000px;
+            perspective-origin: 50% 50%;
+        }
+
+        .holo-stack-3d {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transform: rotateX(62deg) rotateZ(35deg);
+            animation: holoFloat 5.5s ease-in-out infinite;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes holoFloat {
+            0%, 100% {
+                transform: translateY(0px) rotateX(62deg) rotateZ(35deg);
+            }
+            50% {
+                transform: translateY(-12px) rotateX(65deg) rotateZ(38deg);
+            }
+        }
+
+        /* Central Laser Column */
+        .central-core-beam {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 100px;
+            background: linear-gradient(to top, rgba(0, 102, 255, 0.1), #00d2ff 60%, #ffffff);
+            box-shadow: 0 0 14px #00d2ff, 0 0 25px #0066ff;
+            transform: translate(-50%, -50%) rotateX(-90deg) translateZ(45px);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        /* Holographic Stack Plates */
+        .holo-plate {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            transform-style: preserve-3d;
+            backdrop-filter: blur(5px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+
+        .plate-node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00d2ff;
+            box-shadow: 0 0 8px #00d2ff;
+        }
+        .node-tl { top: 7px; left: 7px; }
+        .node-tr { top: 7px; right: 7px; }
+        .node-bl { bottom: 7px; left: 7px; }
+        .node-br { bottom: 7px; right: 7px; }
+
+        /* Plate 1: Base Core */
+        .holo-plate-1 {
+            transform: translateZ(10px);
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.4), rgba(4, 18, 52, 0.85));
+            border: 1.5px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 25px rgba(0, 102, 255, 0.4), inset 0 0 15px rgba(0, 210, 255, 0.25);
+        }
+
+        /* Plate 2: Middle Services */
+        .holo-plate-2 {
+            transform: translateZ(46px);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.35), rgba(8, 28, 75, 0.8));
+            border: 1.5px solid rgba(0, 210, 255, 0.65);
+            box-shadow: 0 0 28px rgba(0, 210, 255, 0.4), inset 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Plate 3: Top Application */
+        .holo-plate-3 {
+            transform: translateZ(82px);
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.55), rgba(16, 42, 110, 0.9));
+            border: 1.8px solid #00d2ff;
+            box-shadow: 0 0 35px rgba(0, 210, 255, 0.65), inset 0 0 25px rgba(0, 210, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Plate Accordion Expansion on Hover */
+        .holo-stack-wrapper:hover .holo-plate-1 {
+            transform: translateZ(0px);
+            box-shadow: 0 0 35px rgba(0, 102, 255, 0.65);
+        }
+        .holo-stack-wrapper:hover .holo-plate-2 {
+            transform: translateZ(54px);
+            box-shadow: 0 0 40px rgba(0, 210, 255, 0.6);
+        }
+        .holo-stack-wrapper:hover .holo-plate-3 {
+            transform: translateZ(108px);
+            box-shadow: 0 0 50px rgba(0, 210, 255, 0.9);
+        }
+
+        /* Internal circuitry & sweeps */
+        .plate-circuit {
+            position: absolute;
+            inset: 12px;
+            border: 1px dashed rgba(0, 210, 255, 0.35);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .top-emblem {
+            color: #ffffff;
+            filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: emblemPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes emblemPulse {
+            0% { transform: scale(0.95); opacity: 0.9; }
+            100% { transform: scale(1.06); opacity: 1; }
+        }
+
+        /* 3D Gyro Orbital Ring */
+        .orbital-ring {
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            width: 164px;
+            height: 164px;
+            border: 1.5px dashed rgba(56, 189, 248, 0.45);
+            border-radius: 50%;
+            transform: rotateX(72deg) rotateY(16deg);
+            animation: spinOrbit 9s linear infinite;
+            pointer-events: none;
+        }
+
+        .orbital-satellite {
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 12px #00d2ff, 0 0 20px #00d2ff;
+        }
+
+        @keyframes spinOrbit {
+            from { transform: rotateX(72deg) rotateY(16deg) rotateZ(0deg); }
+            to { transform: rotateX(72deg) rotateY(16deg) rotateZ(360deg); }
+        }
+
+
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 6vw, 4.4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            max-width: 900px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 70%, #00d2ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(0, 210, 255, 0.25);
+        }
+
+        .hero-description {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-muted);
+            line-height: 1.65;
+            max-width: 660px;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .hero-description strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Middle Email Engagement CTA */
+        .engage-action-wrapper {
+            margin: 0.5rem 0 3.2rem 0;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .engage-email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 34px;
+            border-radius: 60px;
+            background: linear-gradient(135deg, rgba(8, 24, 64, 0.8), rgba(12, 38, 96, 0.85));
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-decoration: none;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 8px 30px rgba(0, 102, 255, 0.25), 0 0 20px rgba(0, 210, 255, 0.15);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .engage-email-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 60px;
+            background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .engage-email-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 14px 40px rgba(0, 102, 255, 0.45), 0 0 35px rgba(0, 210, 255, 0.4);
+            background: linear-gradient(135deg, rgba(14, 38, 92, 0.9), rgba(0, 102, 255, 0.3));
+        }
+
+        .engage-email-btn:hover::before {
+            opacity: 1;
+        }
+
+        .engage-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 210, 255, 0.12);
+            border: 1px solid rgba(0, 210, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.25);
+            transition: all 0.35s ease;
+        }
+
+        .engage-email-btn:hover .engage-icon-box {
+            background: var(--primary);
+            color: #030816;
+            transform: rotate(-8deg) scale(1.08);
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.6);
+        }
+
+        .engage-text {
+            letter-spacing: -0.01em;
+            transition: color 0.3s ease;
+        }
+
+        .engage-email-btn:hover .engage-text {
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+        }
+
+        .engage-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-cyan);
+            transition: transform 0.35s ease, color 0.35s ease;
+        }
+
+        .engage-email-btn:hover .engage-arrow {
+            transform: translateX(5px);
+            color: #ffffff;
+        }
+
+        /* Offerings / Solutions Cards */
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 780px;
+            margin-top: 1rem;
+        }
+
+        .solution-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 18px;
+            padding: 1.8rem 1.4rem;
+            text-align: left;
+            backdrop-filter: var(--glass-blur);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 18px;
+            background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 210, 255, 0.12), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-highlight);
+            box-shadow: 0 16px 36px rgba(0, 40, 120, 0.3);
+            background: var(--bg-card-hover);
+        }
+
+        .solution-card:hover::after {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: rgba(0, 102, 255, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 2.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            font-size: 0.86rem;
+            color: var(--text-subtle);
+            animation: fadeIn 1.2s ease;
+        }
+
+        /* Keyframes */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 868px) {
+            .solutions-grid {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .wrapper {
+                padding: 1.8rem 1.1rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1.2rem;
+                align-items: flex-start;
+            }
+
+            .engage-email-btn {
+                padding: 12px 20px;
+                font-size: 0.94rem;
+                gap: 12px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Canvas for Interactive Constellation -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Glowing Background Ambient Orbs -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="grid-overlay"></div>
+
+    <div class="wrapper">
+        <!-- Header -->
+        <header>
+            <a href="#" class="brand-logo" id="brandLogoLink" aria-label="Garnet Stack Home">
+                <div class="brand-name">
+                    Garnet<span class="highlight">Stack</span>
+                </div>
+            </a>
+
+            <div class="status-pill">
+                <span class="pulse-dot"></span>
+                <span>Platform Launch In Progress</span>
+            </div>
+        </header>
+
+        <!-- Main Hero Section -->
+        <main>
+            <!-- Interactive 3D Holographic Tech Stack -->
+            <div class="holo-stack-wrapper" id="holoStackWrapper" title="Interactive Garnet Tech Stack - Hover or move your cursor">
+                <div class="holo-scene">
+                    <div class="holo-stack-3d" id="holoStack3D">
+                        <!-- Central Vertical Core Beam -->
+                        <div class="central-core-beam"></div>
+
+                        <!-- 3D Gyro Orbital Ring -->
+                        <div class="orbital-ring">
+                            <span class="orbital-satellite"></span>
+                        </div>
+
+                        <!-- Layer 1: Base Core Infrastructure -->
+                        <div class="holo-plate holo-plate-1">
+                            <span class="plate-node node-tl"></span>
+                            <span class="plate-node node-tr"></span>
+                            <span class="plate-node node-bl"></span>
+                            <span class="plate-node node-br"></span>
+                            <div class="plate-circuit"></div>
+                        </div>
+
+                        <!-- Layer 2: Cloud & Microservices -->
+                        <div class="holo-plate holo-plate-2">
+                            <span class="plate-node node-tl"></span>
+                            <span class="plate-node node-tr"></span>
+                            <span class="plate-node node-bl"></span>
+                            <span class="plate-node node-br"></span>
+                            <div class="plate-circuit"></div>
+                        </div>
+
+                        <!-- Layer 3: Application & Web Layer -->
+                        <div class="holo-plate holo-plate-3">
+                            <span class="plate-node node-tl"></span>
+                            <span class="plate-node node-tr"></span>
+                            <span class="plate-node node-bl"></span>
+                            <span class="plate-node node-br"></span>
+                            <div class="top-emblem">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2 17L12 22L22 17" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2 12L12 17L22 12" stroke="#00d2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <h1 class="hero-title">
+                Architecting Powerful <span class="gradient-text">Software & Web Solutions</span> for Tomorrow
+            </h1>
+
+            <p class="hero-description">
+                <strong>Garnet Stack</strong> delivers high-performance digital engineering, cloud-native enterprise architecture, and tailored web platforms designed to scale modern businesses effortlessly.
+            </p>
+
+
+
+            <!-- Middle Email Engagement CTA -->
+            <div class="engage-action-wrapper">
+                <a href="mailto:contact@garnetstack.com" class="engage-email-btn" aria-label="Send an email to engage with Garnet Stack">
+                    <span class="engage-icon-box">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                    </span>
+                    <span class="engage-text">Send an email to engage with us</span>
+                    <span class="engage-arrow">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Solutions Showcase Cards -->
+            <div class="solutions-grid">
+                <div class="solution-card">
+                    <div class="card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h2 class="card-title">Custom Software Engineering</h2>
+                    <p class="card-desc">Bespoke enterprise applications, robust microservices, and mission-critical systems engineered for scale and speed.</p>
+                </div>
+
+                <div class="solution-card">
+                    <div class="card-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="card-title">Modern Web Solutions</h2>
+                    <p class="card-desc">Immersive web platforms, SaaS ecosystems, and API-driven architectures built with progressive, reactive technologies.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-copy">
+                &copy; <span id="currentYear">2026</span> Garnet Stack Technologies. All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    <!-- Internal JS -->
+    <script>
+        (function() {
+            // 1. Interactive Spotlight Card Effect
+            const cards = document.querySelectorAll('.solution-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // 2. Interactive Constellation Canvas Particle System
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // 3. Interactive 3D Holographic Tech Stack Motion
+            const stack3D = document.getElementById('holoStack3D');
+            const stackWrapper = document.getElementById('holoStackWrapper');
+            if (stack3D && stackWrapper) {
+                window.addEventListener('mousemove', (e) => {
+                    const normX = (e.clientX / window.innerWidth - 0.5) * 2;
+                    const normY = (e.clientY / window.innerHeight - 0.5) * 2;
+                    
+                    const tiltX = 62 - (normY * 16);
+                    const tiltZ = 35 + (normX * 22);
+                    
+                    stack3D.style.transform = `rotateX(${tiltX}deg) rotateZ(${tiltZ}deg)`;
+                });
+
+                window.addEventListener('mouseleave', () => {
+                    stack3D.style.transform = 'rotateX(62deg) rotateZ(35deg)';
+                });
+            }
+
+            let width, height;
+            let particles = [];
+            const particleCount = 65;
+            const maxDistance = 140;
+
+            const mouse = {
+                x: null,
+                y: null,
+                radius: 160
+            };
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initParticles();
+            });
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.radius = Math.random() * 2 + 1;
+                    this.baseAlpha = Math.random() * 0.5 + 0.2;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0 || this.x > width) this.vx *= -1;
+                    if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                    // Mouse interaction
+                    if (mouse.x !== null && mouse.y !== null) {
+                        const dx = mouse.x - this.x;
+                        const dy = mouse.y - this.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < mouse.radius) {
+                            const force = (mouse.radius - distance) / mouse.radius;
+                            const directionX = dx / distance;
+                            const directionY = dy / distance;
+                            this.x -= directionX * force * 2;
+                            this.y -= directionY * force * 2;
+                        }
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(0, 210, 255, ${this.baseAlpha})`;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#00d2ff';
+                    ctx.fill();
+                    ctx.shadowBlur = 0; // reset
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw lines between proximate particles
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a + 1; b < particles.length; b++) {
+                        const dx = particles[a].x - particles[b].x;
+                        const dy = particles[a].y - particles[b].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < maxDistance) {
+                            const alpha = (1 - dist / maxDistance) * 0.22;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Update & draw particles
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            resizeCanvas();
+            initParticles();
+            animate();
+
+            // 5. Update footer year dynamically
+            const yearEl = document.getElementById('currentYear');
+            if (yearEl) {
+                yearEl.textContent = new Date().getFullYear();
+            }
+        })();
+    </script>
+</body>
+</html>
